@@ -1,0 +1,334 @@
+version: '3.7'
+
+services:
+  
+  auth-server:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-authserver-host'
+    build:
+      context: .
+      dockerfile: applications/AuthServer.Host/Dockerfile
+    volumes:
+      - auth-server-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - ConnectionStrings__Default=${DB_MsDemo_Identity}
+      - Redis__Configuration=${Redis_URL}
+      - RabbitMQ__Connections__Default__HostName=${RabbitMQ_HostName}
+      - RabbitMQ__Connections__Default__Port=${RabbitMQ_Port}
+      - Seq__Url=${Seq_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-authserver-host
+    ports:
+      - 51511:443
+
+  backend-admin-app:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-backendadminapp-host'
+    build:
+      context: .
+      dockerfile: applications/BackendAdminApp.Host/Dockerfile
+    volumes:
+      - backend-admin-app-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - AuthServer__Authority=${Public_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=${Public_Authority_RequireHttpsMetadata}
+      - RemoteServices__Default__BaseUrl=http://backend-admin-app-gateway/
+      - Redis__Configuration=${Redis_URL}
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-backendadminapp-host
+    ports:
+      - 51512:443
+  
+  public-website:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-publicwebsite-host'
+    build:
+      context: .
+      dockerfile: applications/PublicWebSite.Host/Dockerfile
+    volumes:
+      - public-website-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      # 没有密码，则设置为空，不能写成 ""
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      # 页面跳转的 URL，这个是外网站点，不能配置成内网模式
+      - AuthServer__Authority=${Public_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=${Public_Authority_RequireHttpsMetadata}
+      - RemoteServices__Default__BaseUrl=http://public-website-gateway/
+      - Redis__Configuration=${Redis_URL}
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-publicwebsite-host
+    ports:
+      - 51513:443
+
+  identity-service:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-identityservice-host'
+    build:
+      context: .
+      dockerfile: microservices/IdentityService.Host/Dockerfile      
+    volumes:
+      - identity-service-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - AuthServer__Authority=${Private_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=${Private_Authority_RequireHttpsMetadata}
+      - ConnectionStrings__Default=${DB_MsDemo_Identity}
+      - Redis__Configuration=${Redis_URL}
+      - RabbitMQ__Connections__Default__HostName=${RabbitMQ_HostName}
+      - RabbitMQ__Connections__Default__Port=${RabbitMQ_Port}
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-identityservice-host
+    ports:
+      - 51522:443
+
+  tenant-management-service:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-tenantmanagementservice-host'
+    build:
+      context: .
+      dockerfile: microservices/TenantManagementService.Host/Dockerfile
+    volumes:
+      - tenant-management-service-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - AuthServer__Authority=${Private_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=false
+      - ConnectionStrings__Default=${DB_MsDemo_Identity}
+      - Redis__Configuration=${Redis_URL}
+      - RabbitMQ__Connections__Default__HostName=${RabbitMQ_HostName}
+      - RabbitMQ__Connections__Default__Port=${RabbitMQ_Port}
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-tenantmanagementservice-host
+    ports:
+      - 51524:443
+
+  blogging-service:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-bloggingservice-host'
+    build:
+      context: .
+      dockerfile: microservices/BloggingService.Host/Dockerfile
+    volumes:
+      - blogging-service-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - AuthServer__Authority=${Private_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=${Private_Authority_RequireHttpsMetadata}
+      - ConnectionStrings__Default=${DB_MsDemo_Identity}
+      - ConnectionStrings__Blogging=${Mongo_URL}
+      - Redis__Configuration=${Redis_URL}
+      - RabbitMQ__Connections__Default__HostName=${RabbitMQ_HostName}
+      - RabbitMQ__Connections__Default__Port=${RabbitMQ_Port}
+      # Dynamic C# API Clients 的默认访问地址
+      - RemoteServices__Default__BaseUrl=http://internal-gateway/
+      # Dynamic C# API Clients 的授权信息配置 ？？？
+      - IdentityClients__Authority=${Private_Authority_URL}
+      - IdentityClients__RequireHttpsMetadata=${Private_Authority_RequireHttpsMetadata}
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-bloggingservice-host
+    ports:
+      - 51521:443
+
+  product-service:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-productservice-host'
+    build:
+      context: .
+      dockerfile: microservices/ProductService.Host/Dockerfile
+    volumes:
+      - product-service-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - AuthServer__Authority=${Private_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=${Private_Authority_RequireHttpsMetadata}
+      - ConnectionStrings__Default=${DB_MsDemo_Identity}
+      - ConnectionStrings__ProductManagement=${DB_MsDemo_ProductManagement}
+      - Redis__Configuration=${Redis_URL}
+      - RabbitMQ__Connections__Default__HostName=${RabbitMQ_HostName}
+      - RabbitMQ__Connections__Default__Port=${RabbitMQ_Port}
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-productservice-host
+    ports:
+      - 51523:443
+
+  internal-gateway:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-internalgateway-host'
+    build:
+      context: .
+      dockerfile: gateways/InternalGateway.Host/Dockerfile
+    volumes:
+      - internal-gateway-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - AuthServer__Authority=${Private_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=${Private_Authority_RequireHttpsMetadata}
+      - ConnectionStrings__Default=${DB_MsDemo_Identity}
+      - Redis__Configuration=${Redis_URL}
+      - Routes__0__DownstreamHostAndPorts__0__Host=identity-service
+      - Routes__0__DownstreamHostAndPorts__0__Port=80
+      - Routes__0__DownstreamScheme=http
+      - Routes__1__DownstreamHostAndPorts__0__Host=tenant-management-service
+      - Routes__1__DownstreamHostAndPorts__0__Port=80
+      - Routes__1__DownstreamScheme=http
+      - Routes__2__DownstreamHostAndPorts__0__Host=product-service
+      - Routes__2__DownstreamHostAndPorts__0__Port=80
+      - Routes__2__DownstreamScheme=http
+      - Routes__3__DownstreamHostAndPorts__0__Host=blogging-service
+      - Routes__3__DownstreamHostAndPorts__0__Port=80
+      - Routes__3__DownstreamScheme=http
+      - GlobalConfiguration__BaseUrl=http://internal-gateway/
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-internalgateway-host
+    ports:
+      - 51324:443
+
+  backend-admin-app-gateway:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-backendadminappgateway-host'
+    build:
+      context: .
+      dockerfile: gateways/BackendAdminAppGateway.Host/Dockerfile
+    volumes:
+      - backend-admin-app-gateway-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - AuthServer__Authority=${Private_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=${Private_Authority_RequireHttpsMetadata}
+      - ConnectionStrings__Default=${DB_MsDemo_Identity}
+      - Redis__Configuration=${Redis_URL}
+      - Routes__0__DownstreamHostAndPorts__0__Host=identity-service
+      - Routes__0__DownstreamHostAndPorts__0__Port=80
+      - Routes__0__DownstreamScheme=http
+      - Routes__1__DownstreamHostAndPorts__0__Host=tenant-management-service
+      - Routes__1__DownstreamHostAndPorts__0__Port=80
+      - Routes__1__DownstreamScheme=http
+      - Routes__2__DownstreamHostAndPorts__0__Host=product-service
+      - Routes__2__DownstreamHostAndPorts__0__Port=80
+      - Routes__2__DownstreamScheme=http
+      # 如果不加这个配置
+      # 那么就调用 https://localhost:44315/api/identity/users/d3076216-3ca8-2b19-be45-3a030f1549bd/roles?api-version=1.0      
+      # 因为这个 gateway 内部也使用了 Dynamic API Clients
+      # 当访问到这个地址的时候，实际也会路由到 Ocelot
+      - RemoteServices__Default__BaseUrl=http://backend-admin-app-gateway/
+      # Ocelot 的配置？
+      # 当访问到 Ocelot 的这个地址时，就执行路由（一般在反向代理场景配置）
+      - GlobalConfiguration__BaseUrl=http://backend-admin-app-gateway/
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-backendadminappgateway-host
+    ports:
+      - 51531:443
+
+  public-website-gateway:
+    image: 'registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:abp-publicwebsitegateway-host'
+    build:
+      context: .
+      dockerfile: gateways/PublicWebSiteGateway.Host/Dockerfile
+    volumes:
+      - public-website-gateway-log:/app/Logs
+      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+    environment:
+      - ElasticSearch__Url=${ES_URL}
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ASPNETCORE_URLS=${HOST_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_Password}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${SSL_File}
+      - AuthServer__Authority=${Private_Authority_URL}
+      - AuthServer__RequireHttpsMetadata=${Private_Authority_RequireHttpsMetadata}
+      - ConnectionStrings__Default=${DB_MsDemo_Identity}
+      - Redis__Configuration=${Redis_URL}
+      - Routes__0__DownstreamHostAndPorts__0__Host=product-service
+      - Routes__0__DownstreamHostAndPorts__0__Port=80
+      - Routes__0__DownstreamScheme=http
+      - Routes__1__DownstreamHostAndPorts__0__Host=blogging-service
+      - Routes__1__DownstreamHostAndPorts__0__Port=80
+      - Routes__1__DownstreamScheme=http
+      - GlobalConfiguration__BaseUrl=http://public-website-gateway/
+      - Seq__Url=${Seq_URL}
+      - AuthServer__ValidIssuers__0=${Private_Authority_URL}
+      - AuthServer__ValidIssuers__1=${Public_Authority_URL}
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+      - SKYWALKING__SERVICENAME=abp-publicwebsitegateway-host
+    ports:
+      - 51532:443
+
+      
+networks:
+  default:
+    external:
+      name: dev-net
+
+volumes:
+  auth-server-log:
+  backend-admin-app-log:
+  public-website-log:
+  identity-service-log:
+  tenant-management-service-log:
+  blogging-service-log:
+  product-service-log:
+  internal-gateway-log:
+  backend-admin-app-gateway-log:
+  public-website-gateway-log:
+
