@@ -24,9 +24,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -81,9 +81,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -138,9 +138,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -195,9 +195,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -252,9 +252,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -309,9 +309,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -366,9 +366,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -423,9 +423,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -480,9 +480,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
@@ -537,9 +537,9 @@ jobs:
     inputs:
       version: 6.x
   - task: DockerInstaller@0
-    displayName: Install Docker 20.10.9
+    displayName: Install Docker 20.10.18
     inputs:
-      dockerVersion: 20.10.9
+      dockerVersion: 20.10.18
   - task: Docker@2
     displayName: login
     inputs:
