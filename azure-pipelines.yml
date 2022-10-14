@@ -9,7 +9,7 @@ resources:
   repositories:
   - repository: self
     type: git
-    ref: master
+    ref: main
 jobs:
 - job: Job_1
   displayName: abp-authserver-host
