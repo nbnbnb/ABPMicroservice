@@ -3,7 +3,7 @@
 echo "Deploy Param01 $1" 
 echo "Deploy Param02 $2" 
 
-sudo git checkout master
+sudo git checkout main
 sudo git pull
 
 docker pull registry.cn-hangzhou.aliyuncs.com/zhangjj/demo:$2
