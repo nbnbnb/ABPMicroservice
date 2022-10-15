@@ -15,7 +15,7 @@ jobs:
   displayName: abp-authserver-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -72,7 +72,7 @@ jobs:
   displayName: abp-backendadminapp-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -129,7 +129,7 @@ jobs:
   displayName: abp-publicwebsite-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -186,7 +186,7 @@ jobs:
   displayName: abp-identityservice-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -243,7 +243,7 @@ jobs:
   displayName: abp-tenantmanagementservice-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -300,7 +300,7 @@ jobs:
   displayName: abp-bloggingservice-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -357,7 +357,7 @@ jobs:
   displayName: abp-productservice-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -414,7 +414,7 @@ jobs:
   displayName: abp-internalgateway-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -471,7 +471,7 @@ jobs:
   displayName: abp-backendadminappgateway-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
@@ -528,7 +528,7 @@ jobs:
   displayName: abp-publicwebsitegateway-host
   timeoutInMinutes: 120
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - checkout: self
     clean: true
