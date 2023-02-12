@@ -9,7 +9,7 @@ services:
       dockerfile: applications/AuthServer.Host/Dockerfile
     volumes:
       - auth-server-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -33,7 +33,7 @@ services:
       dockerfile: applications/BackendAdminApp.Host/Dockerfile
     volumes:
       - backend-admin-app-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -59,7 +59,7 @@ services:
       dockerfile: applications/PublicWebSite.Host/Dockerfile
     volumes:
       - public-website-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -87,7 +87,7 @@ services:
       dockerfile: microservices/IdentityService.Host/Dockerfile      
     volumes:
       - identity-service-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -115,7 +115,7 @@ services:
       dockerfile: microservices/TenantManagementService.Host/Dockerfile
     volumes:
       - tenant-management-service-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -143,7 +143,7 @@ services:
       dockerfile: microservices/BloggingService.Host/Dockerfile
     volumes:
       - blogging-service-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -177,7 +177,7 @@ services:
       dockerfile: microservices/ProductService.Host/Dockerfile
     volumes:
       - product-service-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -206,7 +206,7 @@ services:
       dockerfile: gateways/InternalGateway.Host/Dockerfile
     volumes:
       - internal-gateway-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -245,7 +245,7 @@ services:
       dockerfile: gateways/BackendAdminAppGateway.Host/Dockerfile
     volumes:
       - backend-admin-app-gateway-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
@@ -288,7 +288,7 @@ services:
       dockerfile: gateways/PublicWebSiteGateway.Host/Dockerfile
     volumes:
       - public-website-gateway-log:/app/Logs
-      - /home/ubuntu/docker-data/ssl/zhangjin.tk:/app/https
+      - /home/ubuntu/ssl/zhangjin.tk:/app/https
     environment:
       - ElasticSearch__Url=${ES_URL}
       - ASPNETCORE_ENVIRONMENT=${ENV}
